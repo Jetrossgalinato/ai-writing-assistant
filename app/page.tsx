@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { generateAIContent } from "./actions";
 import AIResponse from "@/components/AIResponse";
+import { getAvailableModels } from "./actions";
 
 export default function HomePage() {
   const [input, setInput] = useState("");
@@ -21,6 +22,12 @@ export default function HomePage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const checkModels = async () => {
+    const models = await getAvailableModels();
+    console.log("Your Available Models:", models);
+    alert("Check your browser console (F12) for the list of models!");
   };
 
   return (
@@ -73,6 +80,13 @@ export default function HomePage() {
           className="w-full py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 disabled:opacity-50"
         >
           {isLoading ? "Thinking..." : "Generate ✨"}
+        </button>
+
+        <button
+          onClick={checkModels}
+          className="mt-4 text-xs text-slate-400 underline"
+        >
+          Debug: List Available Models
         </button>
 
         {/* Output Area */}

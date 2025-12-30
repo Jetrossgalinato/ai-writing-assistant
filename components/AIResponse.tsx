@@ -1,7 +1,12 @@
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, CSSProperties } from "react";
+
+// Create an interface that matches the expected Index Signature
+interface HighlighterStyle {
+  [key: string]: CSSProperties;
+}
 
 type CodeComponentProps = ComponentPropsWithoutRef<"code"> & {
   inline?: boolean;
@@ -16,27 +21,17 @@ export default function AIResponse({ content }: { content: string }) {
             const match = /language-(\w+)/.exec(className || "");
             const language = match ? match[1] : "";
 
-            // This approach satisfies both TypeScript and ESLint:
-            // We spread the theme into a new object and cast the outer wrapper.
-            const theme = { ...oneDark } as {
-              [key: string]: React.CSSProperties;
-            };
-
-            if (!inline && match) {
-              return (
-                <SyntaxHighlighter
-                  style={theme}
-                  language={language}
-                  PreTag="div"
-                  className="rounded-lg my-4"
-                  {...props}
-                >
-                  {String(children).replace(/\n$/, "")}
-                </SyntaxHighlighter>
-              );
-            }
-
-            return (
+            return !inline && match ? (
+              <SyntaxHighlighter
+                style={oneDark as unknown as HighlighterStyle} // Type-safe double assertion
+                language={language}
+                PreTag="div"
+                className="rounded-lg my-4"
+                {...props}
+              >
+                {String(children).replace(/\n$/, "")}
+              </SyntaxHighlighter>
+            ) : (
               <code
                 className="bg-slate-100 p-1 rounded text-sm font-mono text-pink-600"
                 {...props}
