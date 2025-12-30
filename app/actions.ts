@@ -2,11 +2,24 @@
 
 import { model } from "@/lib/gemini";
 
+export async function getAvailableModels(): Promise<string[]> {
+  try {
+    const result = await genAI.listModels();
+
+    // We extract the model names (e.g., "models/gemini-1.5-flash")
+    // and return them as an array of strings.
+    return result.models.map((m) => m.name);
+  } catch (error) {
+    console.error("Error fetching Gemini models:", error);
+    // Return an empty array or a fallback if the call fails
+    return [];
+  }
+}
+
 export async function generateAIContent(
   userInput: string,
   task: "summarize" | "code"
 ) {
-  // 1. Construct the prompt based on the task
   let prompt = "";
   if (task === "summarize") {
     prompt = `Summarize the following text in a few bullet points: ${userInput}`;
@@ -15,11 +28,8 @@ export async function generateAIContent(
   }
 
   try {
-    // 2. Send the prompt to Gemini
     const result = await model.generateContent(prompt);
     const response = await result.response;
-
-    // 3. Return the text result
     return response.text();
   } catch (error) {
     console.error("AI Generation Error:", error);
