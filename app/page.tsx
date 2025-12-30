@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { generateAIContent } from "./actions";
+import AIResponse from "@/components/AIResponse";
 
 export default function HomePage() {
   const [input, setInput] = useState("");
@@ -76,9 +77,10 @@ export default function HomePage() {
 
         {/* Output Area */}
         {output && (
-          <div className="p-6 bg-white rounded-xl border border-slate-200 shadow-sm">
-            <h2 className="font-bold mb-2 text-slate-700">Result:</h2>
-            <div className="whitespace-pre-wrap text-slate-600">{output}</div>
+          <div className="p-6 bg-white rounded-xl border border-slate-200 shadow-sm w-full">
+            <h2 className="font-bold mb-4 text-slate-700">Result:</h2>
+            {/* 2. Use the new component instead of the simple div */}
+            <AIResponse content={output} />
           </div>
         )}
       </div>

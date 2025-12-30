@@ -15,6 +15,9 @@ export async function generateAIContent(
   }
 
   try {
+    // Inside actions.ts, before model.generateContent
+    const availableModels = await genAI.listModels();
+    console.log(availableModels);
     // 2. Send the prompt to Gemini
     const result = await model.generateContent(prompt);
     const response = await result.response;
